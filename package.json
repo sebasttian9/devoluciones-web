@@ -10,6 +10,7 @@
     "moment": "^2.29.3",
     "nanoid": "^3.3.4",
     "react": "^18.0.0",
+    "react-bootstrap": "^2.4.0",
     "react-dom": "^18.0.0",
     "react-hook-form": "^7.29.0",
     "react-paginate": "^8.1.3",
