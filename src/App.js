@@ -1,23 +1,34 @@
-import logo from './logo.svg';
+
 import './App.css';
+import Cuenta from './components/Cuenta';
+import MisDevoluciones from './components/MisDevoluciones';
+import FolioCreado from './components/FolioCreado';
+import Nabvar from './components/Nabvar';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  NavLink
+} from 'react-router-dom';
+import Inicio from './components/Inicio';
+import CrearDevolucion from './components/CrearDevolucion';
+
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <BrowserRouter>
+        <Nabvar/>
+        <Routes>
+          <Route path='/' element={<Inicio />} />
+          <Route path="/cuenta" element={<Cuenta/>} />
+          <Route path="/crearDev" element={<CrearDevolucion/>} />
+          <Route path="/MisDevoluciones" element={<MisDevoluciones/>} />
+          <Route path="/FolioCreado" element={<FolioCreado/>} />
+          <Route path="*" element={'Ruta no encontrada'} />           
+        </Routes>
+      </BrowserRouter>
+        
     </div>
   );
 }
