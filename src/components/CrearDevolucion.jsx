@@ -1,5 +1,6 @@
 import React from 'react'
-import { useState, useEffect, useId } from 'react';
+import { useState, useEffect, useId, useContext } from 'react';
+import {Store} from '../store/Store';
 import Productos from './Productos';
 import Spinner from './Spinner';
 import SpinnerGuardar from './SpinnerGuardar';
@@ -17,7 +18,8 @@ import {
 
 const CrearDevolucion = () => {
 
-
+    // context con usuario y login
+    const [logeado, setLogeado] = useContext(Store);
 
     // Estado del listado de motivos
     const [motivos, setMotivos] = useState([]);
@@ -36,10 +38,10 @@ const CrearDevolucion = () => {
     const { register, formState: { errors }, handleSubmit } = useForm();
     
     //Estados del Formulario
-    const [empresa, setEmpresa] = useState(0);
+    const [empresa, setEmpresa] = useState(logeado.user.cli_empresa);
     const [motivodev, setMotivoDev] = useState(0);
-    const [rut, setRut] = useState('76.098.370-5');
-    const [razonSocial, setRazonSocial] = useState('Sebastian Valenzuela');
+    const [rut, setRut] = useState(logeado.user.cli_rut);
+    const [razonSocial, setRazonSocial] = useState(logeado.user.cli_razon_social);
     const [guiaDespacho, setGuiaDespacho] = useState('');
     const [factura, setFactura] = useState('');
     const [transporte, setTransporte] = useState(0);
@@ -94,8 +96,8 @@ const CrearDevolucion = () => {
         //se previene el refresh
         // e.preventDefault();
         setIsLoadingCabecera(true);
-        console.log('Ingreso');
-        console.log(e);
+        // console.log('Ingreso');
+        // console.log(e);
 
             // POST request using fetch inside useEffect React hook
             const requestOptions = {
@@ -308,8 +310,7 @@ const CrearDevolucion = () => {
                                 <option value='1'>AUTOMARCO</option>
                                 <option value='2'>GABTEC</option>
                                 <option value='3'>AUTOTEC</option>
-                                <option value='4'>HD AUTOMARCO</option>
-                                <option value='5'>TOP REPUESTOS</option>
+                                <option value='4'>HD AUTOMARCO</option>                               
                             </select>
                             {errors.SelectEmpresa?.type === 'required' && <span className='error'>Seleccione Empresa</span>}              
                         </div>

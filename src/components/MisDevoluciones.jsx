@@ -1,21 +1,23 @@
 import React from 'react'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import ListadoFolios from './ListadoFolios';
 import Spinner from './Spinner';
+import {Store} from '../store/Store';
 
 const MisDevoluciones = () => {
 
-
+  const [logeado, setLogeado] = useContext(Store);
   const [devoluciones, setDevoluciones] = useState([]);
-  const [cargando, setCargando] = useState(true);
+  const [cargando, setCargando] = useState(false);
 
-  const obtenerMotivosDev = async() =>{
+  const obtenerDevoluciones = async() =>{
 
-
-    const url = "https://api-devoluciones.azurewebsites.net/api/devoluciones/foliosCliente/76.098.370-5";
+    setCargando(true)
+    const url = "https://api-devoluciones.azurewebsites.net/api/devoluciones/foliosCliente/"+logeado.user.cli_rut;
     const resp = await fetch(url);
     const data = await resp.json();
     setDevoluciones(data);
+    setCargando(false);
 
 }
 
@@ -23,7 +25,7 @@ const MisDevoluciones = () => {
 useEffect(() => {
 
         
-  obtenerMotivosDev();
+  obtenerDevoluciones();
 
   // return () => {
   //     cleanup
@@ -51,9 +53,12 @@ useEffect(() => {
                         </tr>
                     </thead>
                     <tbody>
-                        {
+                      {
+                        cargando ? (<Spinner mensaje={'Cargando..'}/>) : devoluciones.length ? (<ListadoFolios devoluciones={devoluciones}></ListadoFolios>) : (<tr><td colSpan={6}><b>No se encontraron folios</b></td></tr>) 
+                      }
+                        {/* {
                           devoluciones.length ? (<ListadoFolios devoluciones={devoluciones}></ListadoFolios>) : (<Spinner mensaje={'Cargando..'}/>)
-                        }
+                        } */}
                     </tbody>
                     </table> 
                     </div> 
