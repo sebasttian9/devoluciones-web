@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState, useEffect, useId, useContext } from 'react';
+import { useState, useEffect, useId, useContext, Suspense, lazy } from 'react';
 import {Store} from '../store/Store';
 import Productos from './Productos';
 import Spinner from './Spinner';
@@ -48,6 +48,7 @@ const CrearDevolucion = () => {
     const [solicitud, setSolicitud] = useState(0);
     const [buscaFactura, setBuscaFactura] = useState(false);
     const [selecTodo, setSelecTodo] = useState(true);
+    const [facturaCompletaUsada, setFacturaCompletaUsada] = useState(false);
 
     //cabecera agregada
     const [guardado, setGuardado] = useState(false);
@@ -72,7 +73,11 @@ const CrearDevolucion = () => {
             const url = "https://api-devoluciones.azurewebsites.net/api/devoluciones/motivosdevolucion";
             const resp = await fetch(url);
             const data = await resp.json();
+            console.log(motivos);
+         setTimeout(() => {
             setMotivos(data);
+         }, 10000);  
+            
 
     }
 
@@ -123,6 +128,14 @@ const CrearDevolucion = () => {
             console.log(typeof(data[0]));
             
             if(typeof data[0] ==='number'){
+
+                // creo objeto para guardar en localstorage
+                const objeto = {
+                    'empresa': e.SelectEmpresa
+                };
+
+                // guardo objeto en localstorage
+                localStorage.setItem('empresa', JSON.stringify(objeto));
                 
                 setIsLoadingCabecera(false);
                 setGuardado(true);
@@ -175,7 +188,7 @@ const CrearDevolucion = () => {
 
         const buscarPorFactura = async() =>{
             
-
+            document.getElementById("txtBuscarCodigo").value = '';
             let factura = document.getElementById("txtBuscarFactura").value;
             if(factura===''){
                 alert('Ingrese Factura!'); 
@@ -184,16 +197,86 @@ const CrearDevolucion = () => {
             }
 
             setItLoading(true);            
-            console.log('Buscar por Factura');
+            // console.log('Buscar por Factura');
             let rutSinNada = rut.replace('.','');
             rutSinNada = rutSinNada.replace('.','');
             rutSinNada = rutSinNada.replace('-','');
-            console.log(rutSinNada);
+            // console.log(rutSinNada);
+            //obtengo la empresa
+            // obtengo los datos guardado en localstorage
+            const stringifiedPerson = localStorage.getItem('empresa');
+            const empresa = JSON.parse(stringifiedPerson);
+            console.log(empresa);               
             
-            const response = await fetch('https://api-devoluciones.azurewebsites.net/api/devoluciones/factura/'+txtFactura+'/'+rutSinNada);
+            //Obtengo todos los item de la factura
+            const response = await fetch('https://api-devoluciones.azurewebsites.net/api/devoluciones/factura/'+txtFactura+'/'+rutSinNada+'/'+empresa.empresa);
             const prods = await response.json();
-            // console.log(prods);
-            setProductos(prods);
+            console.log('resultado fac -->',prods);
+
+            if(prods.length>0){
+                // Validar cantidad de item por factura y nota de pedido en las ventas
+                const response2 = await fetch('http://api-devoluciones.azurewebsites.net/api/devoluciones/sumaItems/'+prods[0].factura+'/'+prods[0].nota_pedido);
+                const cantItemVentas = await response2.json();
+                
+                // Validar cantidad de item por factura y nota de pedido en las notas de credito
+                const response3 = await fetch('https://www.gabtec.cl/valida-total-dev-ws.php?nota_pedido='+prods[0].nota_pedido+'&num_factura='+prods[0].factura);
+                const cantItemNcredito = await response3.json();            
+                console.log(cantItemNcredito, cantItemVentas[0].suma);
+                
+                if(cantItemNcredito===cantItemVentas[0].suma){
+
+                    setFacturaCompletaUsada(true);
+                    setProductos([]);
+
+                }else{
+
+                    if(cantItemNcredito>0){
+
+                        // recorrer los productos y crear el campo cantidad_disponible
+                        let prods2 = [];
+                        // prods.map(item => {
+                        for (const item of prods) {
+            
+                            // valido cada producto si la cantidad fue usada completa
+                            const response3 = await fetch('https://www.gabtec.cl/valida-dev-ws.php?nota_pedido='+item.nota_pedido+'&num_factura='+item.factura+'&prod_id='+item.prod_id);
+                            const cantItemNcredito = await response3.json();
+                            console.log(cantItemNcredito);
+                            
+                            let cantidadDisponible = item.unidad - cantItemNcredito[0].cant_usada;
+            
+                            if(cantidadDisponible>0){
+                                prods2.push({...item, cant_disponible: cantidadDisponible});
+                            }
+                            
+                            // console.log('validacion -->',cantItemNcredito);
+                            // console.log(item.factura);
+                        }                    
+
+                        setProductos(prods2);
+                    }else{
+
+                        // recorrer los productos y crear el campo cantidad_disponible
+                        let prods2 = [];
+                        // prods.map(item => {
+                        for (const item of prods) {
+            
+                            
+                                prods2.push({...item, cant_disponible: item.unidad});
+                            
+                            
+                            // console.log('validacion -->',cantItemNcredito);
+                            // console.log(item.factura);
+                        }                    
+
+                        setProductos(prods2); 
+                        console.log(prods2);                           
+
+                    }
+                }
+            }else{
+                setProductos(prods);
+            }
+            
             setItLoading(false);
 
         //  Optional code to simulate delay
@@ -254,10 +337,14 @@ const CrearDevolucion = () => {
                                 <input type='text' className="form-control" onChange={e=>(setTxtFactura(e.target.value))} id='txtBuscarFactura' name='txtBuscarFactura' placeholder='Buscar Factura' />
                                 <button type='button' onClick={() => {buscarPorFactura()}} className='btn btn-primary btn-sm mt-2 float-start'>Buscar</button>
                             </div>
-                            <BuscarCodigo productos={productos} setBuscaFactura={setBuscaFactura} rut={rut} setItLoading={setItLoading} setProductos={setProductos}/>
+                            <BuscarCodigo productos={productos} setBuscaFactura={setBuscaFactura} rut={rut} setItLoading={setItLoading} setProductos={setProductos} setFacturaCompletaUsada={setFacturaCompletaUsada}/>
                         </div>
                     </form>
 
+                    {
+                        facturaCompletaUsada ? (<div class="alert alert-danger my-2" role="alert">Esta factura completa ya fue ocupada para devolucion!</div>) : null
+                    }
+                    
                     <div className="col-12 mt-5" style={{border:'1px solid #adb5bd',padding: '1rem',borderRadius: '6px'}}>
                         <span className='float-start mb-4'>Resultados de busqueda</span>
                         {
@@ -279,10 +366,10 @@ const CrearDevolucion = () => {
                         
                         <th scope="col">Codigo</th>
                         <th scope="col">Descripcion</th>
-                        <th scope="col">Cantidad</th>
+                        <th scope="col">Cantidad disponible</th>
                         <th scope="col">Factura</th>
                         <th scope="col">Cant. devolver</th>                            
-                        <th scope="col">Acciones</th>
+                        <th scope="col">Seleccionar</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -317,7 +404,7 @@ const CrearDevolucion = () => {
                         <div className='col-6 mt-3'>
                             <label htmlFor="selectMotivo" className="form-label float-start">Motivo devolucion</label>
                             <select  defaultValue={motivodev} onChange={e => (setMotivoDev(e.target.value))} {...register("SelectMotivo", { required: true })} id="selectMotivo" className="form-select form-select-md" aria-label=".form-select-sm example">
-                                <option value="">(seleccione)</option>
+                                <option value="">{ motivos.length ? '(seleccione)' : 'Cargando motivos..'  }</option>
                                 {
                                     motivos.map((item,index) =>(
                                         
@@ -339,7 +426,7 @@ const CrearDevolucion = () => {
                                 <input type="text" className="form-control" {...register("txtRazonSocial", { required: true })} value={razonSocial} onChange={e=>(setRazonSocial(e.target.value))}  readOnly id="txtRazonSocial" placeholder="Llenado automatico" />
                         </div>    
                         <div className='col-4 mt-3'>
-                                <label htmlFor="txtGuiaDespacho" className="form-label float-start">Guia despacho / recepcion</label>
+                                <label htmlFor="txtGuiaDespacho" className="form-label float-start">Guia despacho de envio</label>
                                 <input type="text" {...register("txtGuia", { required: false })} className="form-control" value={guiaDespacho} onChange={e=>(setGuiaDespacho(e.target.value))} id="txtGuiaDespacho" placeholder="" />
                                 {errors.txtGuia?.type === 'required' && <span className='error'>Guia despacho es requerida</span>}
                         </div>
@@ -373,7 +460,7 @@ const CrearDevolucion = () => {
                         </div>
                         <div className='col-12 mt-3'>
                                 <label htmlFor="txtObservacion" className="form-label float-start">Observacion</label>
-                                <input type="text" {...register("txtObservacion", { required: false })} maxLength={120}  className="form-control"  id="txtObservacion" />
+                                <input type="text" {...register("txtObservacion", { required: false })} maxLength={120}  className="form-control" placeholder='(Máximo 120 caracteres )'  id="txtObservacion" />
                         </div>                                                                                                      
                     </div>
                     <div className="col-12 mt-5">

@@ -16,6 +16,7 @@ const MisDevoluciones = () => {
     const url = "https://api-devoluciones.azurewebsites.net/api/devoluciones/foliosCliente/"+logeado.user.cli_rut;
     const resp = await fetch(url);
     const data = await resp.json();
+    console.log(data);
     setDevoluciones(data);
     setCargando(false);
 

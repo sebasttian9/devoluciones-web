@@ -127,7 +127,7 @@ const seleccionarProducto = (item,index) => {
         <tr key={index}>
             <th scope="row">{formatearProd(item.prod_id)}</th>
             <td>{item.prod_descripcion_venta}</td>
-            <td>{item.unidad}</td>        
+            <td>{item.cant_disponible}</td>        
             <td>{item.factura}</td>
             <td><input className='form-control form-control-sm' defaulvalue={0}  style={{width: "50px", margin:'auto'}} min={0}  type={'number'} id={'txtCantDevolver'+index}></input></td>
             <td>

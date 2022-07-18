@@ -80,6 +80,7 @@ const ModalGuardarFolio = ({productosSeleccionados,formatearProd, idFolio}) => {
             
           if(typeof data2 ==='number'){
 
+            localStorage.removeItem('empresa');
             setGuardado(true);
             setMensaje('folio Guardado!');
             setTimeout(()=>{

@@ -25,7 +25,7 @@ const ListadoFolios = ({devoluciones}) => {
                     <td>{item.id_numero_seguimiento}</td>
                     <td>{moment(item.Fecha_recepcion).utc().format('DD-MM-YYYY')}</td>
                     <td>{item.motivo_corto}</td>
-                    <td>{item.estado_folio}</td>
+                    <td>{item.estado}</td>
                     <td><ModalDetalleFolio idFolio={item.id_folio} /></td>
                 </tr>    
         </>

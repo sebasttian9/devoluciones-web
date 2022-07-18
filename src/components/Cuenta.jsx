@@ -5,12 +5,14 @@ import { useContext } from 'react';
 const Cuenta = () => {
 
 
+
+
     const [logeado, setLogeado] = useContext(Store);
 
   return (
     <>
         <div className="container mt-4">
-            <h1>Mi cuenta</h1>
+            <h1>Mi cuenta </h1>
             <div className='row'>
                 <div className='col-6 mt-5'>
                     <label htmlFor="exampleFormControlInput1" className="form-label float-start">Correo</label>

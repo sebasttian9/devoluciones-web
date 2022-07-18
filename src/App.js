@@ -54,7 +54,7 @@ function App() {
     // return () => {
     //   cleanup
     // };
-  }, [logeado]);
+  }, []);
   // const [data,setData] = useState({
   //   items: [],
   //   cantidad: 0,
