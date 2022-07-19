@@ -215,7 +215,7 @@ const CrearDevolucion = () => {
 
             if(prods.length>0){
                 // Validar cantidad de item por factura y nota de pedido en las ventas
-                const response2 = await fetch('http://api-devoluciones.azurewebsites.net/api/devoluciones/sumaItems/'+prods[0].factura+'/'+prods[0].nota_pedido);
+                const response2 = await fetch('https://api-devoluciones.azurewebsites.net/api/devoluciones/sumaItems/'+prods[0].factura+'/'+prods[0].nota_pedido);
                 const cantItemVentas = await response2.json();
                 
                 // Validar cantidad de item por factura y nota de pedido en las notas de credito
