@@ -2,64 +2,10 @@ import React, {useState} from 'react';
 import ModalDetalleFolio from './ModalDetalleFolio';
 import moment from 'moment';
 import ReactPaginate from 'react-paginate';
-import jsPDF from 'jspdf';
-import "jspdf-barcode";
+
 
 const ListadoFolios = ({devoluciones}) => {
 
-
-  const  generatePDF = (num_seg,padre) => {
-
-console.log(num_seg, padre);
-
-    var doc = new jsPDF('p', 'pt');
-    
-    var img = new Image();
-    img.src = '../../img/automarco.jpg'; 
-    // doc.addImage(img, 'png', 250, 280, 100, 30);
-    doc.addImage(img, 'png', 250, 25, 100, 30);
-    doc.rect(125, 20, 350, 300); // empty square  H, V , W , H 
-
-    doc.setFontSize(22);
-    doc.setFont('helvetica')
-    doc.text(205, 80, 'Etiqueta de envio')
-
-    doc.setFontSize(15);
-    doc.setFont('helvetica')
-
-    let barra = '';
-    // doc.setFontType('normal')
-    if(padre!=='' && padre!==null && padre!=='null'){
-
-      doc.text(180, 100, `Num de seguimiento : ${padre}`)
-      barra = padre;
-    }else{
-      doc.text(180, 100, `Num de seguimiento : ${num_seg}`)
-      barra = num_seg;
-    }
-    
-    doc.barcode(`${barra}`, {
-      fontSize: 40,
-      textColor: "#000000",
-      x: 250,
-      y: 148
-    }) 
-
-    doc.line(475, 160, 125, 160);
-
-    doc.setFontSize(15);
-    doc.setFont('helvetica')
-    // doc.setFontType('normal')
-    doc.text(165, 190, `Retorno a :`)
-    doc.setFontSize(12);
-    doc.text(165, 210, `Holding Automarco`)     
-    doc.text(165, 230, `Dirección : LAS ESTERAS NORTE 2541`)
-    doc.text(165, 250, `Comuna : QUILICURA`)
-    doc.text(165, 270, `Departamento : Devoluciones`)     
-
-    
-    doc.save('etiquetaEnvio.pdf')
-    }
 
 
   // console.log('fecha -->',devoluciones[0].Fecha_recepcion);
@@ -67,24 +13,24 @@ console.log(num_seg, padre);
 
   const [pageNumber,setPageNumber] = useState(0); 
 
-  const devoPerPage = 10;
+  const devoPerPage = 40;
   const pagesVisited = pageNumber * devoPerPage;
   // 40 -> 50
   const displayDevo = devoluciones
     .slice(pagesVisited, pagesVisited + devoPerPage)
     .map((item, index) => {
-        console.log(index);
+        // console.log(index);
       return (
       <>   
                 <tr key={index}>
-                    <td>{item.id_folio}</td>
+                    <td>{item.rut_cliente}</td>
                     <td>{item.id_numero_seguimiento  }</td>
-                    <td>{item.num_seg_padre !== 'null' ? item.num_seg_padre : ''}</td>
+                    <td>{item.Factura_boleta}</td>
                     <td>{moment(item.Fecha_recepcion).utc().format('DD-MM-YYYY')}</td>
                     <td>{item.motivo_corto}</td>
                     <td><span title={item.descripcion}>{item.estado}</span></td>
                     <td><ModalDetalleFolio idFolio={item.id_folio} /></td>
-                    <td><button type="button" className="btn btn-secondary btn-sm" value='Etiqueta' onClick={()=>(generatePDF(item.id_numero_seguimiento,item.num_seg_padre))}>Etiqueta envio</button></td>
+                    {/* <td><button type="button" className="btn btn-secondary btn-sm" value='Etiqueta' onClick={()=>(generatePDF(item.id_numero_seguimiento,item.num_seg_padre))}>Etiqueta</button></td> */}
                 </tr>    
         </>
       )      
@@ -104,7 +50,7 @@ console.log(num_seg, padre);
     <>
     {displayDevo}
     <tr>
-      <td colSpan={8}>
+      <td colSpan={6}>
         <div>
         <ReactPaginate 
           previousLabel={"Anterior"}

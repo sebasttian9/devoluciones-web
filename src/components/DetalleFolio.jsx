@@ -1,12 +1,26 @@
 
 
 import ModalGuardarFolio from "./ModalGuardarFolio";
+import { useRef, useEffect } from "react";
+import { animateScroll as scroll} from 'react-scroll';
 
-const DetalleFolio = ({productosSeleccionados, setProductosSeleccinados,idFolio}) =>{
+const DetalleFolio = ({productosSeleccionados, setProductosSeleccinados,idFolio, setGuardado, setProductos}) =>{
+
+
+
+        const onClickDown = () => {
+            scroll.scrollToBottom();
+         }
+
+        useEffect(() => {
+            onClickDown();
+
+        }, []);
 
         const formatearProd = (prod_id) =>{
 
-
+            
+           
                 let cuerpo = '';
                 let guion = '';
                 cuerpo = prod_id.substring(0,5);
@@ -40,10 +54,12 @@ const DetalleFolio = ({productosSeleccionados, setProductosSeleccinados,idFolio}
     return (
 
             <div className="mt-5 mb-5">
-                    <h3>Productos seleccionados</h3>
+                    {/*  */}
+                    <span className='float-start mb-4 px-4 py-4'><h5>Productos seleccionados</h5></span>
                     <div className="col-12 mt-5 mb-5" style={{border:'1px solid #adb5bd',padding: '1rem',borderRadius: '6px'}}>
                         {/* <span className='float-start mb-4'>Resultados de busqueda</span> */}
-                    <table className="table ">
+                        
+                    <table className="table table-primary ">
                     <thead>
 
                         <tr>
@@ -80,7 +96,7 @@ const DetalleFolio = ({productosSeleccionados, setProductosSeleccinados,idFolio}
                                 
                                     )))) 
                                        :                                     
-                                    (<tr><td colSpan={6}>No hay productos seleccionados</td></tr>)
+                                    (<tr><td colSpan={7}>No hay productos seleccionados</td></tr>)
                         }
                         
                     </tbody>
@@ -88,9 +104,9 @@ const DetalleFolio = ({productosSeleccionados, setProductosSeleccinados,idFolio}
                     </div>       
 
                     <div className="row mt-3">
-                        <div className="col-12">
+                        {/* <div className="col-12"> */}
 
-                            <ModalGuardarFolio formatearProd={formatearProd} idFolio={idFolio}  productosSeleccionados={productosSeleccionados}/>
+                            <ModalGuardarFolio setProductos={setProductos} formatearProd={formatearProd} idFolio={idFolio}  productosSeleccionados={productosSeleccionados} setGuardado={setGuardado} setProductosSeleccinados={setProductosSeleccinados}/>
                             {/* {
                                 productosSeleccionados.length ? 
                                 
@@ -101,7 +117,7 @@ const DetalleFolio = ({productosSeleccionados, setProductosSeleccinados,idFolio}
                                 (<input type={'button'} className="btn btn-success" disabled   onClick={()=>(enviarDetalleFolio())} value={'Guardar folio'}></input>)
                             } */}
                             
-                        </div>
+                        {/* </div> */}
                     </div>
                     </div>                    
             

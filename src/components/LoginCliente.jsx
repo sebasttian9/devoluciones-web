@@ -74,6 +74,9 @@ const LoginCliente = () => {
                 setLogeado({
                     user: personAsObjectAgain,
                     estado: true,
+                    vinculada:false,
+                    folios_vinculados: 0,
+                    cant_productos: 0
                 });
                 navigate('/');
 
@@ -94,7 +97,7 @@ const LoginCliente = () => {
         <div className='container mt-5 mb-5'>
         <main className="form-signin w-100 m-auto mt-5">
         <form onSubmit={handleSubmit(iniciarSession)}>
-            <h1 className="h3 mb-3 fw-normal">Iniciar session</h1>
+            <h1 className="h3 mb-3 fw-normal">Iniciar sesion</h1>
 
             <div className="form-floating">
             <input type="text" class="form-control" {...register("rutCliente", { required: true })} id="floatingInput" placeholder="18211732-1" />

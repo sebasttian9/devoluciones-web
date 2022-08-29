@@ -1,11 +1,12 @@
-import React from 'react'
-import { useState, useEffect, useId } from 'react';
+import React from 'react';
+import moment from 'moment';
+import { useState, useEffect, useId, useRef } from 'react';
 
 const Productos = (props) => {
 
       //Cantidad devolver
       const [cantidadDevolver, setCantidadDevolver] = useState(0);
-
+    
 
 const formatearProd = (prod_id) =>{
 
@@ -115,7 +116,7 @@ const seleccionarProducto = (item,index) => {
       }
 
     //   console.log('nota y fecha -->',props.productosSeleccinados[0].nota_pedido, props.productosSeleccinados[0].fecha_documento);
-
+    
 }
 
 
@@ -129,6 +130,7 @@ const seleccionarProducto = (item,index) => {
             <td>{item.prod_descripcion_venta}</td>
             <td>{item.cant_disponible}</td>        
             <td>{item.factura}</td>
+            <td>{moment(item.fecha_documento).utc().format('DD-MM-YYYY')}</td>
             <td><input className='form-control form-control-sm' defaulvalue={0}  style={{width: "50px", margin:'auto'}} min={0}  type={'number'} id={'txtCantDevolver'+index}></input></td>
             <td>
                 <div className='btn-group'>
@@ -145,7 +147,7 @@ const seleccionarProducto = (item,index) => {
 
 
     )))
-    : (<tr><td colSpan={6}>No hay datos</td></tr>)
+    : (<tr><td colSpan={7}>No hay datos</td></tr>)
 
     
   )

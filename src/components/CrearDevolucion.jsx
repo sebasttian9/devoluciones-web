@@ -4,9 +4,11 @@ import {Store} from '../store/Store';
 import Productos from './Productos';
 import Spinner from './Spinner';
 import SpinnerGuardar from './SpinnerGuardar';
+import { useNavigate  } from "react-router-dom";
 import '../css/styles.css';
 import BuscarCodigo from './BuscarCodigo';
 import DetalleFolio from './DetalleFolio';
+import ModalTerminarVinculada from './ModalTerminarVinculada';
 import { useForm } from "react-hook-form";
 import {
     BrowserRouter,
@@ -18,6 +20,7 @@ import {
 
 const CrearDevolucion = () => {
 
+    var navigate = useNavigate();
     // context con usuario y login
     const [logeado, setLogeado] = useContext(Store);
 
@@ -48,6 +51,7 @@ const CrearDevolucion = () => {
     const [solicitud, setSolicitud] = useState(0);
     const [buscaFactura, setBuscaFactura] = useState(false);
     const [selecTodo, setSelecTodo] = useState(true);
+    const [nombreTransporte, setMostrarNombreTransporte] = useState(false);
     const [facturaCompletaUsada, setFacturaCompletaUsada] = useState(false);
 
     //cabecera agregada
@@ -62,9 +66,6 @@ const CrearDevolucion = () => {
 
     // Array de productos seleccionados para devolucion
     const [productosSeleccinados, setProductosSeleccinados] = useState([]);
-
-
-    
     
 
     const obtenerMotivosDev = async() =>{
@@ -73,10 +74,10 @@ const CrearDevolucion = () => {
             const url = "https://api-devoluciones.azurewebsites.net/api/devoluciones/motivosdevolucion";
             const resp = await fetch(url);
             const data = await resp.json();
-            console.log(motivos);
-         setTimeout(() => {
+            // console.log(motivos);
+        //  setTimeout(() => {
             setMotivos(data);
-         }, 10000);  
+        //  }, 10000);  
             
 
     }
@@ -104,6 +105,15 @@ const CrearDevolucion = () => {
         // console.log('Ingreso');
         // console.log(e);
 
+        // if(logeado.vinculada){
+                // Actualizamos el estado general del context para sumar cantidad de item y cant de folios.
+                setLogeado({
+                    ...logeado,
+                    folios_vinculados: parseInt(logeado.folios_vinculados) + 1
+                });
+
+        // }
+
             // POST request using fetch inside useEffect React hook
             const requestOptions = {
                 method: 'POST',
@@ -117,7 +127,8 @@ const CrearDevolucion = () => {
                                        txtRut: e.txtRut,
                                        txtFecha: fechaActual(),
                                        SelectSolicitud: e.SelectSolicitud,
-                                       txtObservacion: e.txtObservacion  })
+                                       txtObservacion: e.txtObservacion,
+                                       txtNombreTransporte: e.txtNombreTransporte  })
             };
             const response = await fetch('https://api-devoluciones.azurewebsites.net/api/devoluciones/save', requestOptions);
             const data =  await response.json();
@@ -315,6 +326,22 @@ const CrearDevolucion = () => {
         }
 
 
+        const habilitarNombreTransporte = (value) =>{
+
+                console.log(typeof(value));
+                console.log(4);
+                if(value==='4'){
+
+                    setMostrarNombreTransporte(true);
+                }else{
+                    setMostrarNombreTransporte(false);
+                }
+        }
+
+
+        
+
+
         // const renderProductos = ();
 
   return (
@@ -328,7 +355,7 @@ const CrearDevolucion = () => {
                 
                 ? (<div>
 
-                    <h3>Agregar productos - Folio {idFolio} </h3>
+                    <h3>Agregar productos - Folio {idFolio}</h3>
                     {/* <button className="btn btn-success" type='submit' value="Ingresar detalle"></button> */}
 
                     <form>
@@ -346,7 +373,8 @@ const CrearDevolucion = () => {
                     }
                     
                     <div className="col-12 mt-5" style={{border:'1px solid #adb5bd',padding: '1rem',borderRadius: '6px'}}>
-                        <span className='float-start mb-4'>Resultados de busqueda</span>
+                        {/* <span className='float-start mb-4'>Resultados de busqueda</span> */}
+                        <span className='float-start mb-4'><h5>Resultados de busqueda</h5></span>
                         {
                             buscaFactura ? (<div className='float-end'>Seleccionar todo 
                                                 {selecTodo ? (<button type="button" class="btn ml-1" onClick={() => (seleccionarTodo())} ><svg className='mb-2' xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-square" viewBox="0 0 16 16">
@@ -368,6 +396,7 @@ const CrearDevolucion = () => {
                         <th scope="col">Descripcion</th>
                         <th scope="col">Cantidad disponible</th>
                         <th scope="col">Factura</th>
+                        <th scope="col">Fecha F/</th>
                         <th scope="col">Cant. devolver</th>                            
                         <th scope="col">Seleccionar</th>
                         </tr>
@@ -379,14 +408,14 @@ const CrearDevolucion = () => {
                     </div>       
                     
                     {
-                        productosSeleccinados.length ? (<DetalleFolio  idFolio={idFolio} productosSeleccionados={productosSeleccinados} setProductosSeleccinados={setProductosSeleccinados}/>) : null
+                        productosSeleccinados.length ? (<DetalleFolio setGuardado={setGuardado} setProductos={setProductos} idFolio={idFolio} productosSeleccionados={productosSeleccinados} setProductosSeleccinados={setProductosSeleccinados}/>) : null
                     }
                     
                     </div>) 
                 
                 : (<div>
                     
-                    <h1>Crear Devolucion</h1>
+                    <h1>Crear devolucion { logeado.vinculada ? 'Vinculada' : null }</h1>
 
                     <form onSubmit={handleSubmit(enviarForm)}>
                     <div className="row">
@@ -437,7 +466,7 @@ const CrearDevolucion = () => {
                         </div> */}
                         <div className='col-4 mt-3'>
                             <label htmlFor="selectTransporte" className="form-label float-start">Transporte a bodega</label>                
-                            <select className="form-select form-select-md" defaultValue={transporte} {...register("SelectTransporte", { required: true })}  onChange={e=>(setTransporte(e.target.value))} id="selectTransporte" aria-label=".form-select-sm example">
+                            <select className="form-select form-select-md" defaultValue={transporte} {...register("SelectTransporte", { required: true })}  onChange={(e)=>(habilitarNombreTransporte(e.target.value))} id="selectTransporte" aria-label=".form-select-sm example">
                                 <option value=''>(seleccione)</option>
                                 {/* <option value="1">EXTERNO</option>
                                 <option value="2">INTERNO</option> */}
@@ -445,7 +474,15 @@ const CrearDevolucion = () => {
                                 <option value="4">CLIENTE</option>
                             </select>
                             {errors.SelectTransporte?.type === 'required' && <span className='error'>Seleccione transporte</span>}                
-                        </div>  
+                        </div>
+                        {
+                            nombreTransporte ? (<div className='col-4 mt-3' id='divEsconder'>
+                            <label htmlFor="selectSolicitud" className="form-label float-start">Nombre Transporte</label>                
+                            <input type="text" className="form-control" {...register("txtNombreTransporte", { required: false })} id="txtNombreTransporte" placeholder="" />
+                                           
+                        </div>) : null
+                        }
+                          
                         <div className='col-4 mt-3'>
                             <label htmlFor="selectSolicitud" className="form-label float-start">Solicitud cliente</label>                
                             <select className="form-select form-select-md" defaultValue={0} {...register("SelectSolicitud", { required: true })}  id="selectSolicitud" aria-label=".form-select-sm example">
@@ -464,7 +501,12 @@ const CrearDevolucion = () => {
                         </div>                                                                                                      
                     </div>
                     <div className="col-12 mt-5">
-                        <button className="btn btn-success" type='submit' value="continuar">Guardar y Continuar</button>
+                        {
+                            logeado.vinculada ? (<ModalTerminarVinculada idFolio={idFolio} />) : null
+                        }
+                        <button className="btn btn-success" type='submit' style={{'margin': '0 2.25rem'}} value="continuar">Guardar y Continuar</button>
+
+                        
                     </div>
                     
                     </form>

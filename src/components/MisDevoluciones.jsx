@@ -47,6 +47,7 @@ useEffect(() => {
                         
                         <th scope="col">id</th>
                         <th scope="col">Numero devolucion</th>
+                        <th scope="col">Codigo vinculacion</th>
                         <th scope="col">Fecha ingreso</th>
                         <th scope="col">Motivo</th>
                         <th scope="col">Estado</th>                            

@@ -19,7 +19,7 @@ const BuscarCodigo = ({productos, setProductos, setItLoading, rut, setBuscaFactu
         setFacturaCompletaUsada(false);
         setItLoading(true);
         setBuscaFactura(false);
-        console.log('Buscar por Factura');
+        console.log('Buscar por codigo');
         //Limpiar rut
         let rutSinNada = rut.replace('.','');
         rutSinNada = rutSinNada.replace('.','');
@@ -31,11 +31,14 @@ const BuscarCodigo = ({productos, setProductos, setItLoading, rut, setBuscaFactu
         //obtengo la empresa
         // obtengo los datos guardado en localstorage
         const stringifiedPerson = localStorage.getItem('empresa');
-        const empresa = JSON.parse(stringifiedPerson);        
+        const empresa = JSON.parse(stringifiedPerson);       
+        
+        let test = 'https://api-devoluciones.azurewebsites.net/api/devoluciones/producto/'+codigoBuscarSinGuion+'/'+rutSinNada+'/'+empresa.empresa;
+        console.log(test);
         
         const response = await fetch('https://api-devoluciones.azurewebsites.net/api/devoluciones/producto/'+codigoBuscarSinGuion+'/'+rutSinNada+'/'+empresa.empresa);
         const prods = await response.json();
-        // console.log(prods);
+        console.log(prods);
 
         let prods2 = [];
         // prods.map(item => {

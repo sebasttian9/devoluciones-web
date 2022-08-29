@@ -4,7 +4,7 @@ import "../css/spinner.css";
 export default function LoadingSpinner({mensaje}) {
   return (
     <tr>
-      <td colSpan={6}>
+      <td colSpan={7}>
         <div className="spinner-container ">
           <div className="loading-spinner">
           </div>
