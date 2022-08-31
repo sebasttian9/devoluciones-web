@@ -53,6 +53,7 @@ const CrearDevolucion = () => {
     const [selecTodo, setSelecTodo] = useState(true);
     const [nombreTransporte, setMostrarNombreTransporte] = useState(false);
     const [facturaCompletaUsada, setFacturaCompletaUsada] = useState(false);
+    const [tengoMotivos, SetTengoMotivos] = useState(false);
 
     //cabecera agregada
     const [guardado, setGuardado] = useState(false);
@@ -70,6 +71,7 @@ const CrearDevolucion = () => {
 
     const obtenerMotivosDev = async() =>{
 
+        console.log('antes de carga-->',motivos.length,tengoMotivos);
 
             const url = "https://api-devoluciones.azurewebsites.net/api/devoluciones/motivosdevolucion";
             const resp = await fetch(url);
@@ -78,7 +80,9 @@ const CrearDevolucion = () => {
         //  setTimeout(() => {
             setMotivos(data);
         //  }, 10000);  
+            SetTengoMotivos(true);
             
+        
 
     }
 
@@ -87,6 +91,7 @@ const CrearDevolucion = () => {
 
         
         obtenerMotivosDev();
+        console.log('despues de carga-->',motivos.length,tengoMotivos);
 
         // return () => {
         //     cleanup
@@ -433,7 +438,7 @@ const CrearDevolucion = () => {
                         <div className='col-6 mt-3'>
                             <label htmlFor="selectMotivo" className="form-label float-start">Motivo devolucion</label>
                             <select  defaultValue={motivodev} onChange={e => (setMotivoDev(e.target.value))} {...register("SelectMotivo", { required: true })} id="selectMotivo" className="form-select form-select-md" aria-label=".form-select-sm example">
-                                <option value="">{ motivos.length ? '(seleccione)' : 'Cargando motivos..'  }</option>
+                                <option value="">{ tengoMotivos ? '(seleccione)' : 'Cargando motivos..'  }</option>
                                 {
                                     motivos.map((item,index) =>(
                                         
