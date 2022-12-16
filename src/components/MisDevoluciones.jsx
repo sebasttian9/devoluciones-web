@@ -16,7 +16,7 @@ const MisDevoluciones = () => {
     const url = "https://api-devoluciones.azurewebsites.net/api/devoluciones/foliosCliente/"+logeado.user.cli_rut;
     const resp = await fetch(url);
     const data = await resp.json();
-    console.log(data);
+    // console.log(data);
     setDevoluciones(data);
     setCargando(false);
 
@@ -45,12 +45,16 @@ useEffect(() => {
                     <thead>
                         <tr>
                         
-                        <th scope="col">id</th>
+                        {/* <th scope="col">id</th> */}
                         <th scope="col">Numero devolucion</th>
-                        <th scope="col">Codigo vinculacion</th>
+                        {/* <th scope="col">Codigo vinculacion</th> */}
                         <th scope="col">Fecha ingreso</th>
                         <th scope="col">Motivo</th>
-                        <th scope="col">Estado</th>                            
+                        <th scope="col">Estado</th>
+                        {/* <th scope="col">Nota de credito</th>
+                        <th scope="col">Fecha N/C</th>
+                        <th scope="col">Neto N/C</th> */}
+                        <th scope="col">Num. pedido</th>                            
                         <th scope="col">Detalle</th>
                         </tr>
                     </thead>

@@ -3,7 +3,7 @@ import {Modal, Button} from 'react-bootstrap';
 import SpinnerGuardar from './SpinnerGuardar';
 import { useNavigate  } from "react-router-dom";
 
-const ModalGuardarFolio = ({productosSeleccionados,formatearProd, idFolio}) => {
+const ModalDetalleNC = ({nota,fecha, neto}) => {
 
     const [show, setShow] = useState(false);
 
@@ -12,33 +12,33 @@ const ModalGuardarFolio = ({productosSeleccionados,formatearProd, idFolio}) => {
     var navigate = useNavigate();
 
     const [guardado, setGuardado] = useState(false);
-    const [mensaje, setMensaje] = useState('Detalle Folio - '+idFolio);
+    const [mensaje, setMensaje] = useState('Informacion Nota de credito');
     const [detalle, setDetalle] = useState([]);
 
     // console.log(idFolio);
+// console.log(nota, fecha, neto);
+
+  //   const obtenerDetalleFolio = async() =>{
 
 
-    const obtenerDetalleFolio = async() =>{
+  //     const url = "https://api-devoluciones.azurewebsites.net/api/devoluciones/detalleFolio/"+idFolio;
+  //     const resp = await fetch(url);
+  //     const data = await resp.json();
+  //     setDetalle(data);
+  //     console.log(data);
+  //     // console.log(url);
+  // }
 
 
-      const url = "https://api-devoluciones.azurewebsites.net/api/devoluciones/detalleFolio/"+idFolio;
-      const resp = await fetch(url);
-      const data = await resp.json();
-      setDetalle(data);
-      // console.log(data);
-      // console.log(url);
-  }
-
-
-    useEffect(() => {
+  //   useEffect(() => {
 
       
-      obtenerDetalleFolio();
+  //     obtenerDetalleFolio();
 
-      // return () => {
-      //     cleanup
-      // };
-    }, []);
+  //     // return () => {
+  //     //     cleanup
+  //     // };
+  //   }, []);
     
     
 
@@ -59,7 +59,7 @@ const ModalGuardarFolio = ({productosSeleccionados,formatearProd, idFolio}) => {
 
 
     {/* <Button type={'button'} className="btn btn-success"   >Ver detalle</Button> */}
-    <button type="button" className="btn btn-primary btn-sm" onClick={()=>(handleShow())}>Ver detalle</button>
+    <button type="button" className="btn btn-info btn-sm" onClick={()=>(handleShow())}>Info N/C</button>
 
       <Modal show={show} onHide={handleClose} size="lg" centered>
         <Modal.Header closeButton>
@@ -73,26 +73,26 @@ const ModalGuardarFolio = ({productosSeleccionados,formatearProd, idFolio}) => {
                     <thead>
                         <tr>
                         
-                        <th scope="col">Codigo</th>
-                        <th scope="col">Descuento</th>
-                        <th scope="col">Cantidad</th>
-                        <th scope="col">Factura</th>                          
+                        <th scope="col">Nota de credito</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Valor neto</th>
+                        {/* <th scope="col">Factura</th>                           */}
                         {/* <th scope="col">Detalle</th> */}
                         </tr>
                     </thead>
                     <tbody>
                       {
-                          detalle.map((item,index) =>(
+                          
 
-                            <tr key={index}>
-                              <td>{item.prod_id}</td>
-                              <td>{item.descuento}</td>
-                              <td>{item.cantidad}</td>
-                              <td>{item.num_factura}</td>
+                            <tr key={1}>
+                              <td>{nota  ? nota : 'Sin informacion'}</td>
+                              <td>{fecha ? fecha : 'Sin informacion'}</td>
+                              <td>{neto ? neto : 'Sin informacion'}</td>
+                              {/* <td>{item.num_factura}</td> */}
                               {/* <td>{item.id_folio}</td> */}
                             </tr>
                             
-                          ))
+                        
                       }
 
                     </tbody>
@@ -112,4 +112,4 @@ const ModalGuardarFolio = ({productosSeleccionados,formatearProd, idFolio}) => {
   )
 }
 
-export default ModalGuardarFolio
+export default ModalDetalleNC

@@ -19,7 +19,7 @@ const MisDevoluciones = () => {
     const url = "https://api-devoluciones.azurewebsites.net/api/devoluciones/foliosClientes";
     const resp = await fetch(url);
     const data = await resp.json();
-    // console.log(data);
+    console.log(data);
     setDevoluciones(data);
     setTablaDevoluciones(data);
     setCargando(false);
@@ -83,7 +83,7 @@ useEffect(() => {
 
       <div className="col-12 mt-5" style={{border:'1px solid #adb5bd',padding: '1rem',borderRadius: '6px'}}>
                         {/* <span className='float-start mb-4'>Resultados de busqueda</span> */}
-                    <table className="table ">
+                    <table className="table " style={{fontSize:'15px'}}>
                     <thead>
                         <tr>
                         
@@ -92,7 +92,10 @@ useEffect(() => {
                         <th scope="col">Factura</th>
                         <th scope="col">Fecha ingreso</th>
                         <th scope="col">Motivo</th>
-                        <th scope="col">Estado</th>                            
+                        <th scope="col">Estado</th>
+                        <th scope="col">N/c</th>
+                        <th scope="col">Fecha N/C</th>
+                        <th scope="col">Neto N/c</th>
                         <th scope="col">Detalle</th>
                         </tr>
                     </thead>

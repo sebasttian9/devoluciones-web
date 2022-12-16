@@ -28,6 +28,9 @@ const ListadoFolios = ({devoluciones}) => {
                     <td>{item.Factura_boleta}</td>
                     <td>{moment(item.Fecha_recepcion).utc().format('DD-MM-YYYY')}</td>
                     <td>{item.motivo_corto}</td>
+                    <td>{item.nota_credito==0? '' : item.nota_credito }</td>
+                    <td>{item.fecha_ncredito}</td>
+                    <td>{item.neto_ncredito}</td>
                     <td><span title={item.descripcion}>{item.estado}</span></td>
                     <td><ModalDetalleFolio idFolio={item.id_folio} /></td>
                     {/* <td><button type="button" className="btn btn-secondary btn-sm" value='Etiqueta' onClick={()=>(generatePDF(item.id_numero_seguimiento,item.num_seg_padre))}>Etiqueta</button></td> */}
